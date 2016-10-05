@@ -1,0 +1,194 @@
+BLOOMS TAXONOMY OF LEARNING
+------------------
+Create
+Evaluate
+Analuze
+-------------------
+(II) Apply
+(III) Understand
+(I) Remember //Don't spend so much time on the easy remember questions
+             //Move on to the harder ones
+
+Not going to ask you to code. This is not a porgrammign class
+
+Is this true
+or is this not ture
+
+We think very concrete buuuut we can score points for saying yes
+    or no as long as we have a good explanation
+
+1 THING FOR ALL QUESTIONS
+how much did you learn in this class
+
+
+Don't give blank responses
+
+
+Some of the threads are based in kernel and user 
+we need to 
+
+
+Exams are not that hard. (IF you do your own work)
+
+Sastry will try and fudge exams to make sure that you are not hurt from a bad exam of 2
+
+
+
+--------REVIEW----------
+
+Main Concepts:
+
+TOPICS:
+
+1. What operating systems do
+   - Provide process view abstraciton for computer systems
+    
+Schedler dispatches
+Upcalls
+Differences between user and kernel threads
+difference in mapping modes
+
+There are a few main principles
+    -Mutual exclusion
+    -Context switch -Ignore the cost of context switch
+    -The only way you can invoke any service in an OS is a system call
+        - this involves switch between user and kernel modes and kernle and user modes
+    
+    -There is a lifecycle of a proccess in the Finite State machine until it is done computing
+        -If a problem tells you "this will take 5 seconds for computation it will take you
+            5 seconds for ocmputation"
+
+    -User threads kicking out the kernel doesnt know (I am not sure what he said about this one )
+
+
+OPERATING SYTEms keep track of process
+    -Process Contorl block
+        -Cheat sheet to keep track of them
+
+
+-Process goes through life cycle
+-OS knows how to keep track
+-Executable code is just a text segment of hte process
+    -The process has  a footprint (Blocb )
+    -In modern OS the blob sizes change but for now jus tthing that all processes have the same
+        size blob
+
+    -DO NOT FORGET THE BLOB
+
+
+    -Threads are just like processes
+    -We need to know mapping from kernel to user threads
+    -Threads don't have their own _________
+
+    -OS designers write lists of 400 events they know how to manage
+        -Doenst mean all 400 will occur in the OS
+        -Every time an event comes to ahppen - Keeps an event control blcok for it
+        
+        -Trhead control block
+        -Process    ""
+        -Event      ""
+
+
+    -Kernel threads are more efficient
+        -Yes and no
+        -If you have to transfer control to a kernel thread you have to go through a system call
+            -System calls are horrible it takes a lot of time
+            -Use user threads if you want to invoke a lot of threadsand close and open them all
+                 the time
+            
+        -Spawning a bunch that go very fast do it in user
+    -If you have long lsting thread thats need infor mation before process goes to sleep do kernel threads
+
+
+
+NEXT BIG IDEA
+---------------Why bother with so many processes--------------
+    -Most processes go through compute and IO bursts
+    -COMPTUER | IO IO IO IO IO| COMP COMP| IO ...
+    
+    -Becaus ethe processor can offload other tasks (IO) to other systems the computer can
+        continue executing another procceses compute instrcutions
+    
+    
+    (ASIDE)
+        -Almsost all resources are shared resources
+        -Every process on;ly gets a seat on the porcessor for a short amount of time
+    
+        -OS shares stuff and executes on same processor
+        -"For letting me live here I will take kernel space and manage the processes for you!"
+                -The OS said this
+        -Every process feels like its getting enoght time on the processor for it to complete its execution tasks
+
+
+-What is a process
+    -Its the executable block thing
+
+
+-IO is executed by the IO subsystem
+        
+
+
+I THINK THIS IS THE NEXT BIG IDEA
+----------Utilization----------------
+    -1 chip 1 core 1 thread
+        - U = 1 - p^n
+    -There will be some applications around this formulat
+
+
+There are other metrics
+    -Average response tiem
+    -Throughput
+    -Lots of other metrics. IF ytouw tryu adn imporve utilization then the throughput may suffer
+
+
+QUESTION FROM MARK
+Scheduling
+    -Can we do the most efficient way to do it
+
+Interaupptiis hardware signal
+Trap is an isntruciton
+    -SWI
+    
+Vector interrupts
+    hardware goes to interrupt serivce routine
+    you can send trap to OS Kernel will have to handle it
+
+Trap is an instruciton in user space
+    -There are certian ones that onle the kernel can execute
+
+
+--------------BACK TO PROCESSES--------------
+Very simple problem
+-Multiple processes with ungaurded shared resource == RACE CONDITIONS
+    -Book has example of register race conditions I thin khe said
+
+    -
+
+    -Race condition
+        -Coutcome depends on the order of events
+        -makes it difficult to debug
+
+    -You have to make sure they never occur
+        -Mutal exclusive access to the resource
+        -How you do it is your problem but as long as you have mutual exclusion you should be good
+
+    -Test and set, TSL = Hardware support
+
+    
+-Semaphore  | Mutex | Binary semaphore
+
+
+-----------MEssageing_------------
+-Send funciton and recieve function
+    -Send: pid and message
+    -REcv: pid and buffer
+
+    -Blocking and non blocking
+        -               -puts it onthe queue and then keeps on chugging!
+    hang undtil the transaction is complete
+    
+    -Blcoking is easy to debug
+    -Nonblocking is good for performace
+
+
+
