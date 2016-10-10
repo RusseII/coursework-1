@@ -1,0 +1,48 @@
+What we still have to learn
+
+-----SCHEDULING------
+-Processes and Threads
+---------------
+-Disk Scheduling
+
+
+-----PROJECT PRESENTATIONS------
+-5 to 7 minutes
+-2 or 3 person teams
+-Exepctation:
+    -Each team goes above and beyond the material taight in the class and you 
+         find something ofd your interest that is contemporary
+    -Go find your passion, something of interst to you, in the world around you
+    -"hey this is an operating system"
+        -Don't get caight up in a huge buly thing
+        -Any size
+        -Any domain of interst
+        -Find a REAL operating system
+
+            -How does it manage
+                -Storage
+                -Resources
+                -connectivity
+                -files
+        -Hey this guy has looked at a memory management as a dining philosphers problem
+        -Connect it to class
+        -Don't come back with something dumb like 512 bytes of this this many save registers
+
+        -We want to know hwo they do process management 
+        -CONNECT BACK TO CLASS -- This is an importatn part of your grade
+
+
+    -Do something novel
+        Not windowsNT and linux
+
+
+
+----ANOTHER PROJECT THING----
+-Ethics
+
+
+
+
+----Scheduler---- it makes choices ( there is more than one way to choose and diff reasons to choose )
+-Makes choices about what porcess to execute next
+-Does it through the Scheduling algorithm
