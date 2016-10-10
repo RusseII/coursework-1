@@ -1,0 +1,33 @@
+Back to the trapezoid rule:
+    computing each trapezoid and then add ing htem together. 
+    what is the trapezoid rule?
+        Waited ~2 minutes
+        -Parllel task, embarassingly parallel, threads execute with no communicaiton
+            have to sync up at end to compute a sum
+        -Might have to assign multiple trapezoids to threads to cover the whole regoin
+        -Global result needs to be protected with a critical section
+            #pragma omp critical global_result += my_result;
+
+        What does this do? (Code) SLIDE 33
+            Waited ~2 minutes
+            -We compute the global result and then add it to the global result after
+                setting as a critical section
+            -Does taht make sense? Can everyone handle this?
+        
+        What does main do?
+            Waited 30 seconds
+            -Gets info I need and then this code will execute in parallel on how many threads i told you 
+                to run it
+        After it runs what happens?
+            -Prints out the results on the main thread 
+            -There is an impolicit sync point at "Trap" 
+            -Most of the threads go away leaving hte master thread to execute to the end.
+            Any questions? Does this make sense?
+    
+
+
+        How can we make it better?
+            Does that make sense?
+        
+            We can do better by adding a reduction clause to a parallel directive
+        
