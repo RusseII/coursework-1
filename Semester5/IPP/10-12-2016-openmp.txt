@@ -1,0 +1,60 @@
+------openmp---------
+----begin previous days-----
+    -pragmaomp paralllel : shared/private (modified each of these pragmas with clases 
+        that include shraed, private, num_threads, reduction)
+    -omp_get_num_threads
+    -omp_get_thread_num
+    -#pragma omp parallel for : Parallel for does what?
+                                Breaks up the for loop and distributes it among the threads
+                                Try to assign one thread per iteration if I can
+                                Unless I specifiy otherwise
+                                cuz I can modify the parallel for withs tatic, dynamic and
+                                    guided scheudling
+
+                                Will attempt to crate threads. Only when I don't ahve enouh I have 
+                                    to do multiple iteratoins in order
+    -#pragma omp citical : one thread at a time uses the critical section
+
+    Also did scheduling the data distrubtion stuff
+
+----End previous-----
+    #pragma omp for : will simply try andn use the threads already crates
+                        you are at the mercy of how many threads have been created
+                        ther emight not be enough
+
+    EXECUTion model
+        -Thread team. When I get to parlalel region I create slave threads that in cooperation with 
+            the master thread complete all the work
+
+        -When we join back up in the master thread we deactivate or destroy slave threads to 
+            be reactivated when we get to the next paralle region
+        -we may have sleeping threasd depending on the decision I made making *openmp*
+
+        -parllel for picks up threads that are already there
+
+        -There is an implicit sync when we get to the end of the parallel
+
+        -we activate a certain number of threads with '''omp parallel private(f)'''
+        -Then we use them with '''omp for'''
+            Does that make sesne?
+
+
+------NEXT TOPIC NOT RELATED TO OPENMP BUT PARALLELISM IN GENERAL-------
+
+Data Parallelism and Task parallelism
+    Data Parllelism- 
+    Task Parallelism- Everyone does something seperate. 
+    
+    ---I guess this is back to openmp----
+        -Parllel sections
+        -Later versions of opnemp have created the conecpet of tasks
+
+        So I use section when I have multipl independet jobs going on
+            PRODcuder and consumer
+         Task parallelism  ---- -Someone created data
+         Task parallelism  ---- _Someone uses the data
+         
+    :x
+
+
+
