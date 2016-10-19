@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void sendGames(int team, int scores[40][4], int teamScore[10][4]); 
+void getTeamScores(int team, int scores[40][4], int teamScore[10][4]); 
 
 int main(int argc, char *argv[]  ) {
     FILE *fp;
     char buff[255];
     char *teams[8];
+    int i;
+    int j;
     int rank, size;
     int scores[40][4];
     int teamScore1[10][4];
@@ -43,14 +45,25 @@ int main(int argc, char *argv[]  ) {
         }
         fclose(fp);
 
-        sendGames(1, scores, teamScore1);
-        sendGames(2, scores, teamScore2);
-        sendGames(3, scores, teamScore3);
-        sendGames(4, scores, teamScore4);
-        sendGames(5, scores, teamScore5);
-        sendGames(6, scores, teamScore6);
-        sendGames(7, scores, teamScore7);
-        sendGames(8, scores, teamScore8);
+        getTeamScores(1, scores, teamScore1);
+        MPI_Send(&teamScore1, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+        getTeamScores(2, scores, teamScore2);
+        getTeamScores(3, scores, teamScore3);
+        getTeamScores(4, scores, teamScore4);
+        getTeamScores(5, scores, teamScore5);
+        getTeamScores(6, scores, teamScore6);
+        getTeamScores(7, scores, teamScore7);
+        getTeamScores(8, scores, teamScore8);
+    }
+
+    MPI_Recv(&teamScore1, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+    
+    //Just got out of MPI Recieve
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < 4; j++) {
+            printf("%d", teamScore1[i][j]); 
+        }  
+    
     }
 
     
@@ -62,7 +75,7 @@ int main(int argc, char *argv[]  ) {
 
 
 
-void sendGames(int team, int scores[40][4], int teamScores[10][4]) {
+void getTeamScores(int team, int scores[40][4], int teamScores[10][4]) {
    int i;
    int j;
    //int teamScores[10][4];
