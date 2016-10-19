@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void getTeamScores(int team, int scores[40][4], int teamScore[10][4], int teamScoreTest[40]); 
+void getTeamScores(int team, int scores[40][4], int teamScore[10][4]); 
 
 int main(int argc, char *argv[]  ) {
     FILE *fp;
@@ -13,7 +13,6 @@ int main(int argc, char *argv[]  ) {
     int rank, size;
     int scores[40][4];
     int teamScore1[10][4];
-    int teamScore1Test[40];
     int teamScore2[10][4];
     int teamScore3[10][4];
     int teamScore4[10][4];
@@ -30,24 +29,29 @@ int main(int argc, char *argv[]  ) {
         fp = fopen("xfltms.dat", "r");
 
         int i;
-        for(i = 0; i < 8; i++) getTeamScores(1, scores, teamScore1, teamScore1Test);
+        getTeamScores(1, scores, teamScore1);
+        for(i = 0; i < 10; i++) {
+            for(j = 0; j < 4; j++) {
+                printf("before send: %d\n", teamScore1[i][j]); 
+            }  
+        }
         MPI_Send(&teamScore1, 40, MPI_INT, 1, 0, MPI_COMM_WORLD);
-        //getTeamScores(2, scores, teamScore2);
-        //getTeamScores(3, scores, teamScore3);
-        //getTeamScores(4, scores, teamScore4);
-        //getTeamScores(5, scores, teamScore5);
-        //getTeamScores(6, scores, teamScore6);
-        //getTeamScores(7, scores, teamScore7);
-        //getTeamScores(8, scores, teamScore8);
+        getTeamScores(2, scores, teamScore2);
+        getTeamScores(3, scores, teamScore3);
+        getTeamScores(4, scores, teamScore4);
+        getTeamScores(5, scores, teamScore5);
+        getTeamScores(6, scores, teamScore6);
+        getTeamScores(7, scores, teamScore7);
+        getTeamScores(8, scores, teamScore8);
     }
     
     else if (rank == 1){
         printf("Aout to recieve!\n");
-        MPI_Recv(&teamScore1Test, 40, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+        MPI_Recv(teamScore1, 40, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
         //Just got out of MPI Recieve
         for(i = 0; i < 10; i++) {
             for(j = 0; j < 4; j++) {
-                printf("%d\n", teamScore1[i][j]); 
+                printf("FromTeam1: %d\n", teamScore1[i][j]); 
             }  
         }
     }
@@ -58,7 +62,7 @@ int main(int argc, char *argv[]  ) {
     return 0;
 }
 
-void getTeamScores(int team, int scores[40][4], int teamScores[10][4], int teamScoresTest[40]) {
+void getTeamScores(int team, int scores[40][4], int teamScores[10][4]) {
    int i;
    int j;
    //int teamScores[10][4];
@@ -66,7 +70,6 @@ void getTeamScores(int team, int scores[40][4], int teamScores[10][4], int teamS
         if(scores[i][0] == team || scores[i][1] == team) {
             for(j = 0; j<4; j++){
                 teamScores[i][j] = scores[i][j];
-                teamScoresTest[i+j] = scores[i][j];
             }
         }  
    }
