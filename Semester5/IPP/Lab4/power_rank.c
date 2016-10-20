@@ -18,15 +18,12 @@ int main(int argc, char *argv[]  ) {
                                 100};
     //Initialize a variable to store all of the scores
     int scores[40][4];
-    //Initialize 8 more team scores, one for each process
     int teamScores[10][4];
-
     int localTeamScore[10][4];
     
     int sum = 0;
     int otherTeam = 0;
     int localPower = 0;
-
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -62,16 +59,14 @@ int main(int argc, char *argv[]  ) {
         
         MPI_Barrier(MPI_COMM_WORLD);
     }
-
     
     else {
         MPI_Barrier(MPI_COMM_WORLD);
         MPI_Recv(localTeamScore, 40, MPI_INT, 0, rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
         printf("about to receive. Rank: %d\n", rank);
         for(i = 0; i < 10; i++) {
-                printf("localTeamScore: %d %d %d %d\n", localTeamScore[i][0], localTeamScore[i][1], localTeamScore[i][2], localTeamScore[i][3]); 
+            printf("localTeamScore: %d %d %d %d\n", localTeamScore[i][0], localTeamScore[i][1], localTeamScore[i][2], localTeamScore[i][3]); 
         }
-
 
         for(i = 0; i < 10; i++) {
             if (localTeamScore[i][0] == rank) {
@@ -85,8 +80,16 @@ int main(int argc, char *argv[]  ) {
                 localPower += powers[otherTeam];
             }
         }
+        if(rank == 1) {
+            printf("sum: %d\n\n", sum);        
+            printf("localPower: %d\n\n", localPower);        
+            localPower = (localPower + sum) / 10;
+            printf("localPowerPOwer: %d\n\n", localPower);        
+        }
+        else 
+            localPower = (localPower + sum) / 10;
 
-        localPower = (localPower - sum) / 10;
+
 
         //make equation
         //calculate with 100 as intial value
@@ -120,14 +123,11 @@ int main(int argc, char *argv[]  ) {
                     localPower += powers[otherTeam];
                 }
             }
-            localPower = (localPower - sum) / 10;
+            localPower = (localPower + sum) / 10;
             MPI_Gather(&localPower, 1, MPI_INT, powers, 1, MPI_INT, 0, MPI_COMM_WORLD);
         }
         tol = tol +1;
-        //printf("toleranse: %d\n", tol);
-        //printf("rank: %d, power: %d\n", rank, localPower);
     }
-    
     MPI_Finalize();
     return 0;
 }
