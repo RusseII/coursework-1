@@ -10,23 +10,16 @@ int main(int argc, char *argv[]  ) {
     //loop iterators and rank and size
     FILE *fp;
     char buff[255];
+    char *teams[TEAM_SIZE];
     int i;
     int j;
     int rank, size;
-    float powers[9] = {100, 100, 100, 100, 100, 100, 100, 100,
+    int powers[9] = {100, 100, 100, 100, 100, 100, 100, 100,
                                 100};
     //Initialize a variable to store all of the scores
     int scores[40][4];
     //Initialize 8 more team scores, one for each process
     int teamScores[10][4];
-    int teamScore1[10][4];
-    int teamScore2[10][4];
-    int teamScore3[10][4];
-    int teamScore4[10][4];
-    int teamScore5[10][4];
-    int teamScore6[10][4];
-    int teamScore7[10][4];
-    int teamScore8[10][4];
 
     int localTeamScore[10][4];
     
@@ -66,39 +59,8 @@ int main(int argc, char *argv[]  ) {
             printf("sending...\n");
             MPI_Send(teamScores, 40, MPI_INT, i, i, MPI_COMM_WORLD);
         }
-        //getTeamScores(1, scores, teamScore1);
-
-        //printf("sending\n");
-        //MPI_Send(teamScore1, 40, MPI_INT, 1, 1, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(2, scores, teamScore2);
-        //MPI_Send(teamScore2, 40, MPI_INT, 2, 2, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(3, scores, teamScore3);
-        //MPI_Send(teamScore3, 40, MPI_INT, 3, 3, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(4, scores, teamScore4);
-        //MPI_Send(teamScore4, 40, MPI_INT, 4, 4, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(5, scores, teamScore5);
-        //MPI_Send(teamScore5, 40, MPI_INT, 5, 5, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(6, scores, teamScore6);
-        //MPI_Send(teamScore6, 40, MPI_INT, 6, 6, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(7, scores, teamScore7);
-        //MPI_Send(teamScore7, 40, MPI_INT, 7, 7, MPI_COMM_WORLD);
-        //printf("sending\n");
-
-        //getTeamScores(8, scores, teamScore8);
-        //MPI_Send(teamScore8, 40, MPI_INT, 8, 8, MPI_COMM_WORLD);
-        //MPI_Barrier(MPI_COMM_WORLD);
+        
+        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     
