@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 void getTeamScores(int team, int scores[77][4], int teamScore[16][4]); 
+float calculatePower(int localTeamScore[16][4], float powers[33]);
 
 int main(int argc, char *argv[]  ) {
     int TEAM_SIZE = 32;
@@ -15,12 +16,17 @@ int main(int argc, char *argv[]  ) {
     int j;
     int rank, size;
     float summations = 0;
-    float powers[17] = {100, 100, 100, 100, 100, 100, 100, 100,
+    float powers[33] = {100, 100, 100, 100, 100, 100, 100, 100,
+                        100, 100, 100, 100, 100, 100, 100, 100, 
+                        100, 100, 100, 100, 100, 100, 100, 100,
                         100, 100, 100, 100, 100, 100, 100, 100, 100};
     //Initialize a variable to store all of the scores
     int scores[77][4];
     int teamScores[16][4];
-    int localTeamScore[16][4];
+    int localTeamScore0[16][4];
+    int localTeamScore1[16][4];
+    int localTeamScore2[16][4];
+    int localTeamScore3[16][4];
     
     float sum = 0;
     int otherTeam = 0;
@@ -64,32 +70,39 @@ int main(int argc, char *argv[]  ) {
         sum = 0;
         summations = 0;
         MPI_Barrier(MPI_COMM_WORLD);
-        MPI_Recv(localTeamScore, 64, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+
+        MPI_Recv(localTeamScore0, 64, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+        MPI_Recv(localTeamScore1, 64, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+        MPI_Recv(localTeamScore2, 64, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+        MPI_Recv(localTeamScore3, 64, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
         //printf("about to receive. Rank: %d\n", rank);
         for(i = 0; i < 16; i++) {
             //:wprintf("localTeamScore: %d %d %d %d\n", localTeamScore[i][0], localTeamScore[i][1], localTeamScore[i][2], localTeamScore[i][3]); 
         }
 
-        for(i = 0; i < 16; i++) {
-            if (localTeamScore[i][0] == rank) {
-                otherTeam = localTeamScore[i][1];
-                sum = sum + localTeamScore[i][2] - localTeamScore[i][3];
-                summations += powers[otherTeam];
-            }
-            else {
-                otherTeam = localTeamScore[i][0];
-                sum = sum + localTeamScore[i][3] - localTeamScore[i][2];
-                summations += powers[otherTeam];
-            }
-        }
-        if(rank == 1) {
-            printf("sum: %f\n\n", sum);        
-            printf("localPower: %f\n\n", localPower);        
-            localPower = (summations + sum) / 16;
-            printf("localPowerPOwer: %f\n\n", localPower);        
-        }
-        else 
-            localPower = (summations + sum) / 16;
+        localPower = calculatePower(localTeamScore1, powers);
+            
+
+        //for(i = 0; i < 16; i++) {
+        //    if (localTeamScore0[i][0] == rank) {
+        //        otherTeam = localTeamScore0[i][1];
+        //        sum = sum + localTeamScore0[i][2] - localTeamScore0[i][3];
+        //        summations += powers[otherTeam];
+        //    }
+        //    else {
+        //        otherTeam = localTeamScore0[i][0];
+        //        sum = sum + localTeamScore0[i][3] - localTeamScore0[i][2];
+        //        summations += powers[otherTeam];
+        //    }
+        //}
+        //if(rank == 1) {
+        //    printf("sum: %f\n\n", sum);        
+        //    printf("localPower: %f\n\n", localPower);        
+        //    localPower = (summations + sum) / 16;
+        //    printf("localPowerPOwer: %f\n\n", localPower);        
+        //}
+        //else 
+        //    localPower = (summations + sum) / 16;
 
 
 
@@ -149,3 +162,21 @@ void getTeamScores(int team, int scores[77][4], int teamScores[16][4]) {
         }  
    }
 }
+        float calculatePower(int localTeamScore[16][4], float powers[33]) {
+            sum = 0;
+            summations = 0;
+            for(i = 0; i < 16; i++) {
+                if (localTeamScore[i][0] == rank) {
+                    otherTeam = localTeamScore[i][1];
+                    sum = sum + localTeamScore[i][2] - localTeamScore[i][3];
+                    summations += powers[otherTeam];
+                }
+                else {
+                    otherTeam = localTeamScore[i][0];
+                    sum = sum + localTeamScore[i][3] - localTeamScore[i][2];
+                    summations += powers[otherTeam];
+                }
+            }
+            localPower = (summations + sum) / 16;
+            return localPower;
+        }
