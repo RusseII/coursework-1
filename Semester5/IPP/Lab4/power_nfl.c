@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void getTeamScores(int team, int scores[40][4], int teamScore[10][4]); 
+void getTeamScores(int team, int scores[77][4], int teamScore[16][4]); 
 
 int main(int argc, char *argv[]  ) {
-    int TEAM_SIZE = 8;
+    int TEAM_SIZE = 32;
     //Initialize variables such as file pointer,
     //loop iterators and rank and size
     FILE *fp;
@@ -15,12 +15,12 @@ int main(int argc, char *argv[]  ) {
     int j;
     int rank, size;
     float summations = 0;
-    float powers[9] = {100, 100, 100, 100, 100, 100, 100, 100,
-                                100};
+    float powers[17] = {100, 100, 100, 100, 100, 100, 100, 100,
+                        100, 100, 100, 100, 100, 100, 100, 100, 100};
     //Initialize a variable to store all of the scores
-    int scores[40][4];
-    int teamScores[10][4];
-    int localTeamScore[10][4];
+    int scores[77][4];
+    int teamScores[16][4];
+    int localTeamScore[16][4];
     
     float sum = 0;
     int otherTeam = 0;
@@ -35,8 +35,8 @@ int main(int argc, char *argv[]  ) {
     //correct information to each of the other processes
     if (rank == 0) {
         //Read the team names and save them
-        fp = fopen("xfltms.dat", "r");
-	for(i = 0; i < 8; i++) {
+        fp = fopen("nfltms.dat", "r");
+	for(i = 0; i < 32; i++) {
             fgets(buff, 255, (FILE*)fp);
             teams[i] = buff;
         }
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]  ) {
         
         //read the scores and then close it
         fp = fopen("xfl.dat", "r");
-        for(i = 0; i < 40; i++) {
+        for(i = 0; i < 77; i++) {
             fscanf(fp, "%d %d %d %d", &scores[i][0], &scores[i][1], &scores[i][2], &scores[i][3]);
             //printf("%d", scores[i][0]);
             //printf("\n");
@@ -52,10 +52,9 @@ int main(int argc, char *argv[]  ) {
         fclose(fp);
 
         //Send each team its scores used to calculate the power function
-        for(i = 1; i < 9; i++ ){
+        for(i = 1; i < 17; i++ ){
             getTeamScores(i, scores, teamScores);  
-            printf("sending...\n");
-            MPI_Send(teamScores, 40, MPI_INT, i, i, MPI_COMM_WORLD);
+            MPI_Send(teamScores, 64, MPI_INT, i%8+1, 0, MPI_COMM_WORLD);
         }
         
         MPI_Barrier(MPI_COMM_WORLD);
@@ -65,13 +64,13 @@ int main(int argc, char *argv[]  ) {
         sum = 0;
         summations = 0;
         MPI_Barrier(MPI_COMM_WORLD);
-        MPI_Recv(localTeamScore, 40, MPI_INT, 0, rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-        printf("about to receive. Rank: %d\n", rank);
-        for(i = 0; i < 10; i++) {
-            printf("localTeamScore: %d %d %d %d\n", localTeamScore[i][0], localTeamScore[i][1], localTeamScore[i][2], localTeamScore[i][3]); 
+        MPI_Recv(localTeamScore, 64, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+        //printf("about to receive. Rank: %d\n", rank);
+        for(i = 0; i < 16; i++) {
+            //:wprintf("localTeamScore: %d %d %d %d\n", localTeamScore[i][0], localTeamScore[i][1], localTeamScore[i][2], localTeamScore[i][3]); 
         }
 
-        for(i = 0; i < 10; i++) {
+        for(i = 0; i < 16; i++) {
             if (localTeamScore[i][0] == rank) {
                 otherTeam = localTeamScore[i][1];
                 sum = sum + localTeamScore[i][2] - localTeamScore[i][3];
@@ -84,13 +83,13 @@ int main(int argc, char *argv[]  ) {
             }
         }
         if(rank == 1) {
-            printf("sum: %d\n\n", sum);        
-            printf("localPower: %d\n\n", localPower);        
-            localPower = (summations + sum) / 10;
-            printf("localPowerPOwer: %d\n\n", localPower);        
+            printf("sum: %f\n\n", sum);        
+            printf("localPower: %f\n\n", localPower);        
+            localPower = (summations + sum) / 16;
+            printf("localPowerPOwer: %f\n\n", localPower);        
         }
         else 
-            localPower = (summations + sum) / 10;
+            localPower = (summations + sum) / 16;
 
 
 
@@ -105,18 +104,18 @@ int main(int argc, char *argv[]  ) {
         if (rank == 0){
             localPower = 110;
                 printf("Powers: ");
-            for(i = 0; i < 9; i++)
+            for(i = 0; i < 17; i++)
                 printf("%f ,", powers[i]);
             printf("\n");
             MPI_Gather(&localPower, 1, MPI_FLOAT, powers, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
-            MPI_Bcast(powers, 9, MPI_FLOAT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(powers, 17, MPI_FLOAT, 0, MPI_COMM_WORLD);
         }
 
         else {
             sum = 0;
             summations = 0;
-            MPI_Bcast(powers, 9, MPI_FLOAT, 0, MPI_COMM_WORLD);
-            for(i = 0; i < 10; i++) {
+            MPI_Bcast(powers, 17, MPI_FLOAT, 0, MPI_COMM_WORLD);
+            for(i = 0; i < 16; i++) {
                 if (localTeamScore[i][0] == rank) {
                     otherTeam = localTeamScore[i][1];
                     sum += localTeamScore[i][2] - localTeamScore[i][3];
@@ -128,7 +127,7 @@ int main(int argc, char *argv[]  ) {
                     summations += powers[otherTeam];
                 }
             }
-            localPower = (summations + sum) / 10;
+            localPower = (summations + sum) / 16;
             MPI_Gather(&localPower, 1, MPI_FLOAT, powers, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
         }
         tol = tol +1;
@@ -137,24 +136,16 @@ int main(int argc, char *argv[]  ) {
     return 0;
 }
 
-void getTeamScores(int team, int scores[40][4], int teamScores[10][4]) {
+void getTeamScores(int team, int scores[77][4], int teamScores[16][4]) {
    int i;
    int j;
    int count = 0;
-   //printf("HAHA HERE IS THE TEAM: %d, ", team);
-   //int teamScores[10][4];
-   for(i = 0; i < 40; i++) {
-        if(scores[i][0] == team || scores[i][1] ==team  ) {
+   for(i = 0; i < 77; i++) {
+        if(scores[i][0] == team || scores[i][1] == team  ) {
             for(j = 0; j<4; j++){
                 teamScores[count][j] = scores[i][j];
             }
             count++;
         }  
    }
-}
-
-void recvAndCompute(int team, int TeamScore[10][4]) {
-
-
-
 }
