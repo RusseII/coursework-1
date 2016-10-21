@@ -14,16 +14,17 @@ int main(int argc, char *argv[]  ) {
     int i;
     int j;
     int rank, size;
-    int powers[9] = {100, 100, 100, 100, 100, 100, 100, 100,
+    float summations = 0;
+    float powers[9] = {100, 100, 100, 100, 100, 100, 100, 100,
                                 100};
     //Initialize a variable to store all of the scores
     int scores[40][4];
     int teamScores[10][4];
     int localTeamScore[10][4];
     
-    int sum = 0;
+    float sum = 0;
     int otherTeam = 0;
-    int localPower = 0;
+    float localPower = 0;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -61,6 +62,8 @@ int main(int argc, char *argv[]  ) {
     }
     
     else {
+        sum = 0;
+        summations = 0;
         MPI_Barrier(MPI_COMM_WORLD);
         MPI_Recv(localTeamScore, 40, MPI_INT, 0, rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
         printf("about to receive. Rank: %d\n", rank);
@@ -72,59 +75,61 @@ int main(int argc, char *argv[]  ) {
             if (localTeamScore[i][0] == rank) {
                 otherTeam = localTeamScore[i][1];
                 sum = sum + localTeamScore[i][2] - localTeamScore[i][3];
-                localPower += powers[otherTeam];
+                summations += powers[otherTeam];
             }
             else {
                 otherTeam = localTeamScore[i][0];
                 sum = sum + localTeamScore[i][3] - localTeamScore[i][2];
-                localPower += powers[otherTeam];
+                summations += powers[otherTeam];
             }
         }
         if(rank == 1) {
             printf("sum: %d\n\n", sum);        
             printf("localPower: %d\n\n", localPower);        
-            localPower = (localPower + sum) / 10;
+            localPower = (summations + sum) / 10;
             printf("localPowerPOwer: %d\n\n", localPower);        
         }
         else 
-            localPower = (localPower + sum) / 10;
+            localPower = (summations + sum) / 10;
 
 
 
         //make equation
         //calculate with 100 as intial value
         //MPI gaterh
-        MPI_Gather(&localPower, 1, MPI_INT, powers, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Gather(&localPower, 1, MPI_FLOAT, powers, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
     }
 
     int tol = 0;
     while (tol < 10) {
         if (rank == 0){
-            localPower = 0;
+            localPower = 110;
                 printf("Powers: ");
             for(i = 0; i < 9; i++)
-                printf("%d ,", powers[i]);
+                printf("%f ,", powers[i]);
             printf("\n");
-            MPI_Gather(&localPower, 1, MPI_INT, powers, 1, MPI_INT, 0, MPI_COMM_WORLD);
-            MPI_Bcast(powers, 9, MPI_INT, 0, MPI_COMM_WORLD);
+            MPI_Gather(&localPower, 1, MPI_FLOAT, powers, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(powers, 9, MPI_FLOAT, 0, MPI_COMM_WORLD);
         }
 
         else {
-            MPI_Bcast(powers, 9, MPI_INT, 0, MPI_COMM_WORLD);
+            sum = 0;
+            summations = 0;
+            MPI_Bcast(powers, 9, MPI_FLOAT, 0, MPI_COMM_WORLD);
             for(i = 0; i < 10; i++) {
                 if (localTeamScore[i][0] == rank) {
                     otherTeam = localTeamScore[i][1];
                     sum += localTeamScore[i][2] - localTeamScore[i][3];
-                    localPower += powers[otherTeam];
+                    summations += powers[otherTeam];
                 }
                 else {
                     otherTeam = localTeamScore[i][0];
                     sum += localTeamScore[i][3] - localTeamScore[i][2];
-                    localPower += powers[otherTeam];
+                    summations += powers[otherTeam];
                 }
             }
-            localPower = (localPower + sum) / 10;
-            MPI_Gather(&localPower, 1, MPI_INT, powers, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            localPower = (summations + sum) / 10;
+            MPI_Gather(&localPower, 1, MPI_FLOAT, powers, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
         }
         tol = tol +1;
     }
