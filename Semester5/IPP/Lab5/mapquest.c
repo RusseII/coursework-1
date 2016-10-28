@@ -29,7 +29,6 @@ int main(int argc, char *argv[]) {
     
     for(i = 0; i < 9; i++) {
         fgets(buff, 1024, (FILE*)fp);
-        printf("%s", buff);
         if(i != 0)
             strcpy(citiesNames[i-1],buff);
     }
@@ -51,7 +50,6 @@ int main(int argc, char *argv[]) {
     
         //Read in the next data points
     	fscanf(fp, "%d %d %d", &city_a, &city_b, &distance);
-        printf("%d %d %d\n", city_a, city_b, distance);
     	fgets(line, DATA_LINE_MAX_LEN, fp);
     
     	if (city_a == -1)
@@ -62,7 +60,6 @@ int main(int argc, char *argv[]) {
     	dist[city_b][city_a] = distance;
     }
     
-    printf("    Read in %d connecting roads with distances...\n", total);
     fclose(fp);
 
     //Get the thread number from command line arguments
@@ -77,35 +74,44 @@ int main(int argc, char *argv[]) {
     }
     
     #pragma omp parallel num_threads(num_threads)
-        calculate_shortest_paths(cities, num_threads, thro, dist);
+    calculate_shortest_paths(cities, num_threads, thro, dist);
 
-    printf("NQMQ Menu\n");
-    
-    // Display all cities with numbers
-    for (i = 0; i < cities; ++i) {
-    	printf("%2d. %s\n", i + 1, citiesNames[i]);
+
+    //Interface with user
+    char ans = 'y';
+    while (ans == 'y') {
+        printf("NQMQ Menu\n");
+        
+        // Display all cities with numbers
+        for (i = 0; i < cities; ++i) {
+        	printf("%2d. %s\n", i + 1, citiesNames[i]);
+        }
+        
+        int start, end;
+        
+        printf("\nPath from: ");
+        scanf("%d", &start);
+        printf("Path to: ");
+        scanf("%d", &end);
+        start = start -1;
+        end = end -1;
+        
+        printf("%s to %s\n", citiesNames[start], citiesNames[end]);
+        
+        //Check if it is a max distance
+        if (dist[start][end] == INT_MAX) {
+        	printf("No path available between these cities");
+        	exit(1);
+        }
+        
+        //print out the path from the two cities with the through matrix
+        path_direction(start, end, thro, dist,  citiesNames);
+        printf("Total Distance: %d miles\n", dist[start][end]);
+
+        printf("\nCalculate another distance? y/n: ");
+        scanf(" %c", &ans);
     }
     
-    int start, end;
-    
-    printf("\nPath from: ");
-    scanf("%d", &start);
-    printf("Path to: ");
-    scanf("%d", &end);
-    start = start -1;
-    end = end -1;
-    
-    printf("%s to %s\n", citiesNames[start], citiesNames[end]);
-    
-    //Check if it is a max distance
-    if (dist[start][end] == INT_MAX) {
-    	printf("No path available between these cities");
-    	exit(1);
-    }
-    
-    //print out the path from the two cities with the through matrix
-    path_direction(start, end, thro, dist,  citiesNames);
-    printf("Total Distance: %d miles\n", dist[start][end]);
     return 0;
 }
 
