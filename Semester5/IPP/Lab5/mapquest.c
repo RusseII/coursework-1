@@ -16,27 +16,24 @@ int thro[8][8];
     char *citiesNames[8][200];
     int INT_MAX = 1000000;
 
-void print_path_directions(int a, int b)
+void print_path_directions(int a, int b, int thro[8][8], int dist[8][8], char *citiesNames[8][200])
 {
 	int intermediate = thro[a][b];
 
 	if (intermediate == -1)
 	{
-                printf("Does this one print\n");
 		printf("    %s \e[0;32m->\e[0m %s (%d miles)\n", citiesNames[a], citiesNames[b], dist[a][b]);
-                printf("how about this one\n");
 	}
 	else
 	{
-                printf("does this print\n");
-		print_path_directions(a, intermediate);
-		print_path_directions(intermediate, b);
+                //printf("does this print\n");
+		print_path_directions(a, intermediate, thro, dist, citiesNames);
+		print_path_directions(intermediate, b, thro, dist, citiesNames);
 
-                printf("how about this one\n");
 	}
 }
 
-void calculate_shortest_paths(int cities, int num_threads )
+void calculate_shortest_paths(int cities, int num_threads, int thro[8][8], int dist[8][8])
 {
 	int id = omp_get_thread_num();
 
@@ -80,7 +77,8 @@ void calculate_shortest_paths(int cities, int num_threads )
 int main(int argc, char *argv[]) {
     int rank,
         size,
-        i;
+        i,
+        j;
 
     
     FILE *fp;
@@ -96,14 +94,17 @@ int main(int argc, char *argv[]) {
     int dist[cities][cities];
     int thro[cities][cities];
 
-    for(i = 1; i <= cities+9; i++) {
+    for(i = 0; i < 9; i++) {
         fgets(buff, 1024, (FILE*)fp);
-        strcpy(citiesNames[i-1],buff);
+        printf("%s", buff);
+        if(i != 0)
+            strcpy(citiesNames[i-1],buff);
     }
+    printf("THiS shoudl BE THE firtst one: %s", citiesNames[0]);
 
     //Get the user input
-    //for(i = 0; i < cities+1; i++) 
-    //    printf("%d. %s", i,  citiesNames[i]);
+    for(i = 0; i < 8; i++) 
+        printf("%d. %s", i,  citiesNames[i]);
 
     for (int i = 0; i < cities; ++i)
     {
@@ -113,8 +114,8 @@ int main(int argc, char *argv[]) {
     		thro[i][j]   = -1;
     	}
     }
+
     for (int i = 0; i < cities; dist[i][i] = 0, ++i);
-    printf("Does this print");
     int total;
     for (total = 0; 1; ++total)
     {
@@ -122,21 +123,21 @@ int main(int argc, char *argv[]) {
     	    city_b = 0,
     	    distance   = 0;
     
-    	fscanf(fp, "%d %d %d", &city_a, &city_b, &dist);
+    	fscanf(fp, "%d %d %d", &city_a, &city_b, &distance);
+        printf("%d %d %d\n", city_a, city_b, distance);
     	fgets(line, DATA_LINE_MAX_LEN, fp);
     
     	if (city_a == -1)
     		break;
     
     	// The cities are _NOT_ zero indexed in the data file
-    	dist[city_a - 1][city_b - 1] = distance;
-    	dist[city_b - 1][city_a - 1] = distance;
+    	dist[city_a][city_b] = distance;
+    	dist[city_b][city_a] = distance;
+
     }
     
     printf("    Read in %d connecting roads with distances...\n", total);
     fclose(fp);
-
-
 
     if (argc > 1)
     {
@@ -154,10 +155,25 @@ int main(int argc, char *argv[]) {
     
     struct timeval time_start;
     struct timeval time_end;
+    printf("BEFORE CALCS\n");
+    for(i = 0; i < 8; i++){
+        for(j = 0; j < 8; j++) {
+            printf("%d\t", dist[i][j]);
+        }
+        printf("\n");
+    }
     
     gettimeofday(&time_start, NULL);
     #pragma omp parallel num_threads(num_threads)
-    calculate_shortest_paths(cities, num_threads);
+        calculate_shortest_paths(cities, num_threads, thro, dist);
+
+    printf("After cals\n");
+    for(i = 0; i < 8; i++){
+        for(j = 0; j < 8; j++) {
+            printf("%d\t", dist[i][j]);
+        }
+        printf("\n");
+    }
 
     gettimeofday(&time_end, NULL);
     // Display the menu
@@ -168,7 +184,7 @@ int main(int argc, char *argv[]) {
     // Display all cities with numbers
     for (int i = 0; i < cities; ++i)
     {
-    	printf("%2d. %s\n", i + 1, citiesNames[i+1]);
+    	printf("%2d. %s\n", i + 1, citiesNames[i]);
     }
     
     int start, end;
@@ -188,7 +204,7 @@ int main(int argc, char *argv[]) {
     	exit(1);
     }
     
-    print_path_directions(start, end);
+    print_path_directions(start, end, thro, dist,  citiesNames);
     printf("\n\e[0;32m==>\e[0m Total Distance: %d miles\n", dist[start][end]);
     
     // Free up the cities array and distances array
@@ -198,5 +214,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
-
