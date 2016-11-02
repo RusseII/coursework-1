@@ -1,0 +1,75 @@
+ADC
+LCD
+
+Interrupts
+Timers
+PWM
+
+Harvard VS. Von Neumann archictecture
+
+Read data from Push button with GPIO
+
+They will all apprear on midterm exam
+and CRC
+
+A microcontroller is a full funcitonal computer
+    WHy do we need the explore 16 board?
+    Because that chip is a computer why do we need t barod?
+    ANS: To interface with other circuits. That board hosts other IO devices
+
+    Q:What kind of computer? Cisc or RISC
+    Ans: RISC has fewer instructions with a smaller chip. Save power, smaller dimensions you 
+        want to ahve fewer instrcutions
+        A comptuer is a device that automatically runs programs stored in memory
+
+    Q: What two kinds of memories are there?
+    Ans: Harvard seperates program and daata memory
+        The data is not considered read only.
+        Better if we seperate program and data memory.
+        Microcontroller doesw not have luxuray to load program from another device
+        You can't load from hard dfrive
+        the program memory has to be non voltile
+
+    Q: what do people use to make program memories. Another non volitle storage based on flash
+        EER. Electronic erasable rom
+        The old kind had to use a RV light to program the chip
+
+What else --- GPIO----
+Q: analog or digitia
+    Digital and can be used for both input and output
+    We have a tregister to store wherther ior not its input or output
+
+    there is 16 bit register that controls the voltage from GPIO
+    High or low voltage is controlle dby a register
+
+    TRISA and PORTA
+    -           -controls the pin
+    -
+    Controls input and output
+
+    CPU sends data to IO register in 16 bit data each time
+
+
+
+    The GPIO ports have 64 pins but we want it to be multifucntional
+    Certian pins of PORTB can be used by the ADC as well
+    More configuration register
+
+Timers
+    Device taht increases counts after certain amount of CPU cycles
+        That amont is called prescalar
+    Increases with ints only
+
+    TImer can start from any nyumebr. 
+
+
+Interrupts
+    Allows the CPU to keep running without ignmoring IO resources
+    When those things happend the CPI will interrupot and then handle that IO resource. 
+
+    For example when the timer hits a value an interrupt flag will be raised to tell the
+    CPU that the timer value is up
+
+    We have a perioud register (PR1 - PR5)
+
+    We have an _ISR_ keyword to trigger a function throught hte hardware. 

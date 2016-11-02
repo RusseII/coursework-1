@@ -22,7 +22,7 @@ int main() {
         for (int j = 0; j < matrix_size; j++)
             B[i][j] = 1;
 
-    struct timeval start, end;
+   struct timeval start, end;
 
     gettimeofday(&start, NULL);
 
