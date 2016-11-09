@@ -1,0 +1,89 @@
+What is it going to have?
+
+MEMORY SUBSYSTEM - Chapters 8 and 9
+
+Good?
+What else do you want to know?
+
+Q: Calculator?
+A: Maybe Yes if you cannot do simple multiplications
+
+Q: We don't have to worry about deadlocks and resource allocation graphs
+A: No. It is only on memory subsystem
+
+FINAL- Everythign is fair game
+
+Q: 
+
+
+
+5 Questions
+-----------
+
+        /\
+       /  \
+      /    \ Applications 
+     /_____ \ Analysis 
+    /        \ Recall
+    ----------
+
+
+Address binding
+
+(Matrix thing will not be on the exam)
+
+
+Q: HOw many pages can a frame hold
+A: One page per frame all the time
+
+Q: What is reentrant and preemptable
+A: The code did not get modified when it ran- Reetrant
+
+Reentrant:
+    I ahve some memory. I took a page out and I put code for my ediotr
+    Two users both poiunt to the same piece of code for the text segment
+    Multiple process can use the same code. So basically the code is not keeping any state
+    for each process. Each data is in their own data segment ubt nothing happens to the code
+    I can have 50 edit jobs without more pages
+
+        THIS IS REENTRANT CODE- most system utilites are made to be reentrant code
+
+Preemption:
+    Non preempteable example: Printer I can't yank it off once the resouce is allocated
+    After you did an allocation of a resouce forom a process you can't take if off from the porcess
+    I know you are executing I know you are not completed but I am going to cut you off because your
+    time slice is up. 
+
+    The OS needs to be able to store the state between the context switches fot eh resoursce allocation.
+
+    You can go to a process and save its state and restore it later.
+    
+
+
+To reduce the extent of fragmenetation you can use segmenetation
+    
+    Through the porcesso f swappoing, swapped processes don't ocme back to the same memory address
+        
+
+
+
+Demand paging: Only get the page that we need right now
+
+A page lives in ram if its frame dor in swap space if its not framed
+moving betwee nswap space and memory
+you cannot touch a page until its framed
+
+Q: Can you go over a TLB example?
+
+
+
+
+
+Page fault: Address goes to the page table and says do I have this or not. If I have it no page fault
+    if I dont page fault. *Got* means its framed
+
+
+In demand paging you dont have to frame all fo the pages you ahve for a process
+
+
+

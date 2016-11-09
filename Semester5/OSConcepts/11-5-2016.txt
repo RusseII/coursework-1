@@ -1,0 +1,60 @@
+Demand paging- (Virtual memory)
+    -The OS carves out a certian part of the disk to use for swap space
+    -Pages that aren't in a frame are in the swap space. 
+
+    -Lazy paging- only move in the page that is absolutely needed at this time
+        That is a method for demand paging
+
+
+
+NEXT TOPIC
+
+Policy vs Mechanism
+    
+    -THIS IS ALL A POLICY
+    -Copy on write
+
+        -The rule for creating processes: Copy entire space and give you a copy of this
+        -And if I am going ot copy my meory space, what am I copying? A bunch of pages
+
+        -The parent process makes a copy of a bunch of pages and puts it in the child process
+            Q: Good or bad?
+            A: Uses more space, takes more time, (the child has access to the parent)
+
+            So they came up with copy on write
+                -If you dont make any chcnages to the pages, then you can just use my copy
+                -As soon as oyu make a change you have to make your own
+
+
+
+We need two different things for page replacement:
+    Frame allocation algorithm- decide how to fetch the next frame
+    And Page Replacement Algorithm
+
+    EX:
+        0100 0432 0101 0612 0102
+        0103 0104 0101 0611 0102
+        0103 0104 0101 0610 0102
+        0103 0104 0101 0102 0105
+
+    If page size is 100B, produce a page sequence... (000-099 page 0, page 1 100-199...)
+        1 4 1 6 1
+        1 1 1 6 1
+        1 1 1 6 1
+        1 1 1 1 1
+
+
+    So here is an example with 3 frames. 
+        
+    3 Frames: 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1
+
+    You have three frames
+    CHECK EXAMPLE IN MY NOTES
+
+    For certain algorithms, as the number of frames goes up the page faults do not trend downward
+        consitently becase a certain sequence of page references comes in (Belday's anomaly) IN FIFO
+
+    An optimal algorithm would have the least amount of page flips through this would require 
+        knowledge of the future references.
+        :x
+

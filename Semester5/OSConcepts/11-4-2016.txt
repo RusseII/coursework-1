@@ -1,0 +1,75 @@
+Demand Paging
+
+Processor holds a logical view. You only bring in a page when you need it
+    only when the page is actually needed do you bring it in
+
+    Lazy Swapper- Don't do it until its absolutely critical
+                Unless a page is needed in ram don't use it
+
+    Something has to kick start the swapping process. 
+
+    Almost everything is driven by interrupts.
+
+*Page Fault*
+
+    Instruction that requires access to a word in memory someone had to make a 
+    reference to ao memory word. This is what starts of the process
+
+    When you say memory ccess in the paging system what comes out?
+        Ans: A page and an offeset.
+        
+    The page table converts a page number to a frame number. Uses the P to offeset N
+        *Page Table* - That is i, or invalid. The frame doesnt exist
+        
+        **THis is what starts a page fault**
+
+
+
+    You can think of a page fault in 3 steps
+
+
+Sequence of Ops:
+1. Trap to OS
+2. Save user registers and process state (on PCB)
+3. Determine interrrup was page fault
+4. Check page ref was (legal) and determine location on the disk
+5. Issue read from disk to a free frame (The OS does this job)
+    Goes through free grame list, pulls a frame, updates list, and goes to DMAN controller
+    and says please transfer secondary storage to ram in this free frame
+    
+    Actually done byt he DMA controller but the kernel issues that command
+
+    Q: What is the porcessor doing now? ideling. We can't have that
+
+6. Allocate new process. (Scheduler)
+7. Receive interrupt from IO subsystem - Has to associate interrupt that came back with the process
+    that issued the request. Then we are assuming ht interrupt is returing a valid page
+    -Corrupted -This page doesnt not access somethign
+    
+    But lets assume it was a valid page and everyitnng is OK
+8. Now we have to save user registersa dns state for other process (The one allocated in step 6)
+9. Determine interrupw was from disk
+10. Correct page table and other tables
+    to indicate desired page is in ram
+11. Wait for the CPU to be allocated to the process again
+12. Restore the user registers, process state, new page table, and resume instruction
+
+
+Now we will go on to the 3 step version of this. once you understand what goes on its not that bad
+1. Service page fault interrupt
+2. read in page from store
+3. restart the process 
+
+
+Possiblility of a page fault
+
+EAT = (1-p) * ma = p(8ms) ~= 100ms
+
+220 > 200 + 7999800p
+
+p <= 0.0000025
+
+
+how can I control my page fault rates?
+
+
