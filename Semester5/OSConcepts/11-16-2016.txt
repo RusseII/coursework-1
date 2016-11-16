@@ -1,0 +1,60 @@
+What is the working set?
+A: A set of active (framed) pages of a process
+    The pages it needs that are in ram
+
+Q: Given the working set for a process what can you do with it?
+A: YOu know how many frames it needs. So you can decide how to do context switch
+    Bring the working set back in and out during context switch
+    This brings the page fault rate down tremendously. So you dont have to switch
+    the processes you need to use as often
+
+
+
+-------TODAY----------
+FINish memory subsystem!
+
+We need to talk about how Kernel memory is allocated
+
+Q: Why doesnt kernel use demand paging?
+A: The kernel does not like to page fualt. It is special
+
+For user processes you go through demand paging and switch the pages in and out
+
+Q: When a user process requests memory where does it get it from?
+A: Free frame list. Here is a page from you from the list
+
+    Q: who populates this?
+    A: Kernel. But what part? By page repalcement algorithm
+
+    The kernel goes to the free frame list, fishes out a frame and lets the process ues that
+
+
+So what are the methods the kernel uses to get its own memory?
+    
+    It comes from the free memory pool - owned by the kernel
+    Why does it not go to the normal thing?
+        Because kernel data structures, (PCB and what not) have varying sizes
+        The kernel does not want to go through page faults. IT cant afford to be slow. 
+            kernel accesss has to be very very fast. 
+
+        1. It needs fast access
+        2. Needs contiguous memory
+
+        
+    Two methods of allocating kernel memory
+        (We are not talking abotut the footprint of the kenel)
+        (But when we are executing kernel code and we do malloc for the PCB, various queus etc.)
+        1. Buddy system- pretty old
+            -Power-of-two allocaotr.
+            -What is does it allocates contiguous memory. 
+            -Not chunk sizes but it gies you what you want byt always a little more
+
+        2. Slab system - current
+            -Also a ocntiguous allocator
+            -"Slab cache" Each has one or more slabs 
+            -Each slab has object instatiations
+                -If you do struct in see and do malloc youa re oging to get a chunk of memory
+                -Same kind of hting 
+
+
+
