@@ -1,0 +1,16 @@
+Bootstrapping I think
+Something about the bios and the sectors on a disk drive
+
+
+The OS is a set of clyinders on all the platters
+Swapspace mamnagement: The virtual memory
+    Demand paging
+    
+    No Filsystem                OR      Filesystem
+    RAW I/O
+
+    On LInux you have anonymous memory in your swapspace. 
+
+
+RAID
+
