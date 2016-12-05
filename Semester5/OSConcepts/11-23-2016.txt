@@ -1,0 +1,48 @@
+Storage
+
+-Mass Storage
+-File Systems interface and filesystems implementations
+
+-IO system: How io operations are carried out in computer systems
+
+File system is an abstractino for persistent storage
+-Hidden(Implementation) and -Emphasize(Interface)
+
+    -When we say file we mean any kind of file. Text, source, binary, image files, multimedia
+    Q: WHy is it a file?
+    A: Because it is persistantly stored
+
+
+Per process ther eis a table and open files
+
+Shated(I have no idea what he wrote) Open files table (OS)
+
+-When a process opesn a file it gets a handle
+printf("%d", fopen());
+
+
+Okay so if you have something called an open file, this kindof analogous to a running process
+excpet it is not running. There is a valid handle in one of the processes and its entry is on 
+the open file table
+
+-As soon as you have an open file the OS maintains a few things"
+    1. File pointer standard hting in C
+    2. File open count
+    3. Disk locaiton - the os needs to know where it is on the disk so the OS can go fetch it
+    4. access to rights
+
+    Locks if it is shared or if its exclusive. Usualy do not have race conditions on this one
+        You can create shared memeory to have procesess to exchange info by having a shared ifle
+
+
+    Q: What is the file open count? and why do I need it
+    Q: Why do you need to know how many times it has been opened?
+    A: I didnt listen to the answer ROFL
+
+How to access a file
+-Sequential     -Direct         -INdexed
+
+=Sequential: How does a process get access to a file. A process cannot acces anything on disk without
+    going throuhg a framed page
+    You do a file pointer in OS memory to go here to make a load request to access the file dequentially 
+    

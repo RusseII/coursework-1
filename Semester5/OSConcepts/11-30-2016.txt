@@ -1,0 +1,98 @@
+logical FS
+
+File organization module - Address translation in the storage model Takes a file name
+    and basicall this guy puts out a physical a physical block again its a disk block address
+    We keep calling these fellows disk blokc so we dont confuse with cache blokcs
+
+    Starts out by saying its Drive 1, Cylinder 45, The disk might have multiple tracks so you have
+        to pick a track like Track 4. And finally a sector like 422. 
+        That sector finally gives you a piece of memory
+
+    So this fello, this fellow, keeps what we call Meta Data. What does Meta mean to you guys
+        In this case its data about the files. 
+
+        So we have a FILE CONTROL BLock or an "iNode" in Unix.
+
+        It stores the data about the files in a special file called a directory. The direcytory is a special file
+
+
+Basic FS - Issuesd generic commands to device drivers "retrieve block 1245" (Disk)
+IO Control
+
+
+Device - Two primitive methods for how the handshake happens
+    Poll method and Interrupt Driven
+
+
+I/O Control - Device Drivers ISRs
+            -Abstracts the device out with an "API" to do the job for you
+            
+
+
+So questions about htis. So you can imagine now ayour program says go read
+    Finds teh file you need to access,
+    Gets passed to basic file system, go do the read, 
+    pass it to a device driver
+    the driver gets the infomration back
+
+
+
+So the kinds of things hackers try to do is try stuff until you fail and then they know when you fail
+and break those stuff
+
+
+Q: So this Metadata stuff where does it go?
+A: A directory
+
+Q: How does it organize it?
+A: Hashing
+
+
+----------ALLOCATION METHODS______---------------
+
+How do you make the allocations?
+Variabe size chunks with continuous allocations you have fragmentation problems
+
+    I can have contiguus allocation
+    
+    --Linked access
+        If I dont ahve contiguous allocatino you havew to keep a linked list to know where verything starts and ends
+    
+    --Indexed
+        Looking for something it tells you where to go. When you searh for somthing it tells
+        you whree to go find it
+
+    
+    --Bit Vector
+        All you need to know is if a disk block is allocated or not allocated. And you can 
+        put that information into a bit
+
+
+You can have polled or interrupt driven method
+    -Polled: Something that sits there and waits
+            -Pros: Fast
+            -Cons: Utillzation goes down
+    -Interrupt: When there is a interrupt hit, it goes and gets the data
+    
+
+    Interface circuit
+        -There are registers on both sides. When this guys key is hit there is a byte dumped into the
+            register and then a flag is raised saying I just dilled it dont overwrite this
+
+        Program has to do the setting. Hey I just gave you one and the dispay device sends it
+        and asks for another one
+        
+         
+
+---------------------INODE-------------------
+How it works
+    --It keeps a whole bnch of information about the file
+    --It has pointers that say here is the block where that data is
+
+    There are indirect blocks as well 
+
+    Single and Double
+    Single means you need two hops. Double menas you just have one hop
+
+
+
