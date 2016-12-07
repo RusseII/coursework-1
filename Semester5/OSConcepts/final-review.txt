@@ -1,0 +1,123 @@
+Chapter 10 - Mass storage structure
+
+    Disk, disk arm, tracks, sectors, cylinders. 
+    -Transfer rate, position time, random access time, seek time
+        and rotational latentcy.
+    -Head crash
+
+    Disk Strucutre
+        Logical blocks- the smalles unit of transwer. usually 512 bytes
+        
+    Storage attachement
+        Host attached storage - accessed through local IO ports
+        Network attached storage
+
+    Disk Scheduling
+        Seek time and roational latency both factor in. As well as the bandwidth or the total transfered
+            divided by the request to completion time. 
+        FCFS = first come first served
+        SSTF = shortest seek time first 
+        SCAN = disk arm starts at one end and scans to the other end
+            (Elevator algorithm)
+        C-Scan scheduling = Circular scan 
+        LOOK = Scan and CScan implemented with a look at the next request to see where it should move to next
+
+
+    Disk Formatting
+        Low level formating - usually done by manufacturer and fills teh disk with
+            special data fro each sector
+        ECC - Error correcting code which tells the user if the disk data has
+            become corrupted. Counts the bits during read and write and compares
+
+        Partitioning - before the OS can use the disk to hold files it needs to 
+            record its own data structureso n the disk. It first partitions and then
+            logically formats the data (creation of a file system)
+        Clusters are used to incrase efficiency of file systems
+        Boot block is ROM that is read when the system if first booted. 
+        Bad blocks mean that the block is corrupt and can no longer be writtten to
+            so whenever you want to assign to that block it has to go to a different
+            block instead
+
+    Swap-space management
+        Low level task of OS. Goal is to provide best throughput to the memory
+            systems
+        Either with a seperate partition or with the normal file system
+
+
+    RAID
+        Data striping- splitting bits between multiple disks (bit level striping_
+        Block level striping- Blocks of a file are striped 
+
+
+Chapter 11 File System Interface
+    A file is an abstract datya type defined and implemented by the OS. It si a sequence of logical records.
+    A logical record may be a byte, a line,, or a omore complex daata item. The OS may specifically
+    support various record types or may leave that support to the application program.
+
+    Map logical file onto physical sotracge devices
+    
+    File operatings
+        1. create
+        2. write
+        3. read
+        4. reposition
+        5. delete
+        6. truncate
+    Open FIle table - Keeps track of all the open files
+        File poitner
+        File open count
+        Disk location of the file
+        access rights
+
+    File Access methods
+        Sequential access
+        Direct access
+
+    Directory Overview
+        Serach
+        Crate
+        Delete
+        List
+        Rename
+        Traverse
+
+        
+Chapter 12. File system Structure
+    File systems provide acces to the disk by allowing data to be stores, located and retreived easily
+    YOu muyst define how the file system looks to the user. Create algos and data
+    structures to organize the fiels. 
+
+    IO control level consists of device drivers and interrupt handlers to transwer information
+        between main memory and the disk system. A device driver can be thought of as as translator
+        It inputs consists of high level commands and the output is low level hardware specific instructions
+        used byt the controller to access the data
+
+    The FCB file control block or (inode in linux) contains info about the file including
+        ownership and prermissiona and location of the file contents. 
+
+    Layering minimizes code rewrite for the file system
+
+    -Boot control block - information needed by the OS to boot an OS fromthat volume. 
+    -Volume control block - contains partition (volume) information such as size and blocks
+        and size of the blocks and what not. (master file table or the superblock)
+    -Directory stucture- Used to organize files
+    -per file FCB - Contains data about files
+
+
+    -Mount table to keep track of mounted volumes
+    -Directory structure holds information on recently accessed directoryes
+    -System wide open file tabl
+    
+
+    Directory Implementations
+        1. Llinear List - easy to implement but doing anything takes a long time
+            long to search for a file. You could keep it sorted but that complicates
+            inserting and deleting files
+
+        2. Hash Table - Takes the filename and returns a pointer to the file name
+            in the linear list. Greatly decreas search time. 
+            Have to avoid collisions in inserting and deleting
+            Generally fixed size so you have to make a new table when you 
+                overflow. Or you can do chaining but that slows things down
+
+j
